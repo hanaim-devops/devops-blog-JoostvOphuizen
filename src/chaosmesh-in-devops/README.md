@@ -105,9 +105,132 @@ TODO: herschrijf
 TODO: herschrijf
 
 ## Implementatie van ChaosMesh in een Kubernetes-omgeving
-- Stappenplan voor het opzetten van ChaosMesh in een Kubernetes-cluster
-- Beschrijving van gebruikte tools (bijv. Kind, Linkerd, etc.)
-- Resultaten van de uitgevoerde chaos experiments
+
+### Stappenplan voor het opzetten van ChaosMesh in een Kubernetes-cluster
+
+**Stap 1: Controleer de vereisten**
+
+Zorg voor het volgende:
+
+- **Kubernetes-cluster**: Een draaiend cluster (v1.12 of hoger).
+- **kubectl**: Geconfigureerd om verbinding te maken met je cluster.
+- **Helm**: Versie 3 of hoger voor het beheren van Kubernetes-charts.
+
+**Stap 2: Installeer Helm**
+
+Ik heb Helm geïnstalleerd via Chocolatey:
+
+```bash
+choco install kubernetes-helm
+```
+
+Stap 3: Voeg de Chaos Mesh Helm-repository toe
+
+Voeg de officiële Chaos Mesh Helm-repository toe en werk je lokale Helm-repositories bij:
+
+```bash	
+helm repo add chaos-mesh https://charts.chaos-mesh.org
+helm repo update
+```
+
+<img src="plaatjes/demo/cli-helm-add-chaos-mesh-to-repo.png" alt="Helm repo toevoegen">
+
+Stap 4: Installeer Chaos Mesh
+
+Maak een aparte namespace voor Chaos Mesh:
+
+```bash
+kubectl create namespace chaos-testing
+```
+
+<img src="plaatjes/demo/cli-helm-create-namespace-and-install-chaos-mesh.png" alt="Chaos Mesh installeren">
+
+Stap 5: Verifieer de installatie
+
+Controleer of alle pods draaien:
+
+```bash
+kubectl get pods -n chaos-testing
+```
+
+Je ziet output die aangeeft dat de chaos-controller-manager en chaos-daemon pods draaien.
+<img src="plaatjes/demo/cli-helm-create-namespace-and-install-chaos-mesh.png" alt="Pods controleren">
+
+Stap 6: Open het Chaos Dashboard
+
+Chaos Mesh biedt een dashboard. Open het dashboard met:
+
+```bash
+kubectl port-forward -n chaos-testing svc/chaos-dashboard 2333:2333
+```
+
+Ga in je webbrowser naar http://localhost:2333.
+
+<img src="plaatjes/demo/chaos-mesh-dashboard.png" alt="Chaos Mesh Dashboard">
+
+Uitvoeren van experiments met Chaos Mesh
+Pod Kill experiment
+
+Ik heb een Pod Kill experiment gemaakt via het Chaos Dashboard. Dit experiment stopt de geselecteerde pod om te testen hoe de applicatie reageert op uitval.
+<img src="plaatjes/demo/chaos-mesh-kill-pod-overview.png" alt="Pod Kill experiment">
+
+De YAML-configuratie van het experiment:
+
+```yaml	
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
+metadata:
+  namespace: default
+  name: kill-priemtester
+spec:
+  selector:
+    namespaces:
+      - default
+    pods:
+      default:
+        - priemtester-deployment-5cb95d4d76-wgnd2
+  mode: all
+  action: pod-kill
+```
+
+Network Delay experiment
+
+Het tweede experiment simuleert netwerkvertraging tussen de priemtester applicatie en de postgres database.
+<img src="plaatjes/demo/chaos-mesh-network-latency-overview.png" alt="Network Delay experiment">
+
+De YAML-configuratie van het experiment:
+
+```yaml
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: priemtester-network-delay
+  namespace: default
+spec:
+  action: delay
+  mode: all
+  selector:
+    labelSelectors:
+      app: priemtester
+  delay:
+    latency: '200ms'
+    correlation: '100'
+  direction: to
+  target:
+    mode: all
+    selector:
+      labelSelectors:
+        app: postgres
+  duration: '60s'
+```
+
+Tijdens dit experiment heb ik een Postman-request uitgevoerd naar de priemtester applicatie. Door de vertraging duurde het langer om een respons te ontvangen.
+<img src="plaatjes/demo/postman-latency-demo.png" alt="Postman resultaat">
+Conclusie van de experiments
+
+Door deze experiments uit te voeren, kreeg ik inzicht in hoe de applicatie omgaat met pod-uitval en netwerkvertraging. Het Pod Kill experiment liet zien dat de applicatie de pod automatisch opnieuw startte, wat aangeeft dat er redundantie is. Het Network Delay experiment toonde aan dat de applicatie vertraagde responsen gaf, wat invloed heeft op de gebruikerservaring.
+
+Deze tests benadrukken het belang van chaos engineering bij het identificeren van zwakke punten en het verbeteren van de betrouwbaarheid van microservices in een Kubernetes-omgeving.
 
 ## Conclusie
 - Samenvatting van de belangrijkste bevindingen
