@@ -5,7 +5,9 @@
 
 ## Wat is ChaosMesh
 
-<img src="../chaosmesh-in-devops/plaatjes/chaos-mesh-logo.png" alt="CNCF logo" width="200px" align="right" style="margin: 20px">
+<img src="plaatjes/chaos-monkeyOn-shipping-container.webp" alt="CNCF logo" width="60%" style="margin: 0px 0px 10px 5%; float: right; max-width: 500px;">
+
+<!-- <img src="../chaosmesh-in-devops/plaatjes/chaos-mesh-logo.png" alt="CNCF logo" width="200px" align="right" style="margin: 20px"> -->
 
 ChaosMesh is een open-source chaos engineering tool ontworpen voor Kubernetes clusters. Het biedt een platform om verschillende soorten chaos experiments uit te voeren, zoals netwerkvertragingen, pod-fouten en CPU-belasting. Met ChaosMesh testen we de veerkracht van microservices door gecontroleerde storingen te introduceren.
 
