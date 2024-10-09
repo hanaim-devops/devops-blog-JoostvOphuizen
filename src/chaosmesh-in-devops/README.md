@@ -13,33 +13,45 @@ ChaosMesh is een open-source chaos engineering tool ontworpen voor Kubernetes cl
 
 ### Architectuur en werking van ChaosMesh
 
-ChaosMesh is gebouwd op Kubernetes Custom Resource Definitions (CRDs). Om verschillende chaos experiments te beheren, definieert ChaosMesh meerdere CRD-types op basis van verschillende fouttypen en implementeert het afzonderlijke Controllers voor verschillende CRD-objecten. ChaosMesh bestaat uit drie hoofdcomponenten:
+ChaosMesh is gebouwd op Kubernetes Custom Resource Definitions (CRDs). Om verschillende chaos experiments te beheren, definieert ChaosMesh meerdere CRD-types op basis van fouttypen en implementeert het afzonderlijke Controllers voor elk CRD-object. ChaosMesh bestaat uit drie hoofdcomponenten:
 
-- **Chaos Dashboard**: Het visualisatiecomponent van ChaosMesh. Het biedt een gebruiksvriendelijke webinterface waarmee we chaos experiments kunnen beheren en observeren. Het dashboard biedt ook een RBAC (Role-Based Access Control) machtigingsbeheer.
+- **Chaos Dashboard**: Biedt een webinterface om chaos experiments te beheren en observeren. Het dashboard ondersteunt Role-Based Access Control (RBAC) voor machtigingsbeheer.
+- **Chaos Controller Manager**: Verantwoordelijk voor het plannen en beheren van chaos experiments. Het bevat verschillende CRD Controllers, zoals de Workflow Controller en Controllers voor verschillende fouttypen.
+- **Chaos Daemon**: Voert de daadwerkelijke foutinjecties uit. De Chaos Daemon draait in DaemonSet-modus en heeft standaard de Privileged permissie. Het verstoort netwerkapparaten, bestandssystemen en kernels door te injecteren in de Namespace van de doel-Pod.
 
-- **Chaos Controller Manager**: Het kerncomponent dat verantwoordelijk is voor het plannen en beheren van chaos experiments. Dit component bevat verschillende CRD Controllers, zoals de Workflow Controller, Scheduler Controller en Controllers voor verschillende fouttypen.
-
-- **Chaos Daemon**: Het uitvoerende component. De Chaos Daemon draait in DaemonSet-modus en heeft standaard de Privileged permissie. Het verstoort specifieke netwerkapparaten, bestandssystemen en kernels door te injecteren in de Namespace van de doel-Pod.
-
-Hieronder een schematische weergave van de architectuur van ChaosMesh:
+Hieronder zie je de architectuur van ChaosMesh:
 
 ![ChaosMesh Architectuur](plaatjes/chaos-mesh-architecture.png)
 
-De architectuur van ChaosMesh is onderverdeeld in drie lagen:
+De architectuur is onderverdeeld in drie lagen:
 
-1. **Gebruikersinvoer en observatie**: Gebruikersinteracties beginnen bij de gebruiker en bereiken de Kubernetes API Server. Alle gebruikersoperaties worden uiteindelijk weergegeven als een verandering in een Chaos resource, zoals een wijziging in het NetworkChaos resource.
+1. **Gebruikersinvoer en observatie**: Gebruikersinteracties bereiken de Kubernetes API Server. Alle acties resulteren in een verandering van een Chaos resource, zoals een wijziging in het `NetworkChaos` resource.
+2. **Monitoring van resourcewijzigingen en uitvoering van chaos experiments**: De Chaos Controller Manager ontvangt gebeurtenissen van de Kubernetes API Server. Deze beschrijven wijzigingen in Chaos resources, zoals het aanmaken van een nieuw Chaos object.
+3. **Injectie van specifieke node-fouten**: De Chaos Daemon accepteert commando's van de Chaos Controller Manager, injecteert in de Namespace van de doel-Pod en voert foutinjecties uit. Voorbeelden zijn het instellen van TC-netwerkregels of het starten van het `stress-ng` proces om CPU- of geheugenbronnen te belasten.
 
-2. **Monitoring van resourcewijzigingen en uitvoering van chaos experiments**: De Chaos Controller Manager accepteert gebeurtenissen van de Kubernetes API Server. Deze gebeurtenissen beschrijven wijzigingen in Chaos resources, zoals een nieuw Workflow-object of de creatie van een Chaos-object.
+### Sidecar-injectie en IOChaos
 
-3. **Injectie van specifieke node-fouten**: De Chaos Daemon is verantwoordelijk voor het accepteren van commando's van de Chaos Controller Manager, het injecteren in de Namespace van de doel-Pod en het uitvoeren van specifieke foutinjecties. Voorbeelden zijn het instellen van TC-netwerkregels of het starten van het stress-ng proces om CPU- of geheugenbronnen te belasten.
+In eerdere versies gebruikte ChaosMesh sidecar-containers om I/O-fouten te injecteren. Een sidecar is een extra container die samen met de hoofdcontainer in dezelfde pod draait. Het onderschept en manipuleert I/O-verzoeken om chaos te veroorzaken. De nieuwe IOChaos-implementatie wijzigt de Pod resources niet. Bij het definiëren van een IOChaos experiment wordt voor elke Pod, gefilterd door het `selector` veld, een overeenkomstig `PodIOChaos` resource aangemaakt. Deze aanpak vermindert de complexiteit en verhoogt de efficiëntie van foutinjectie.
+
+### Basisworkflow van ChaosMesh
+
+De workflow van ChaosMesh bestaat uit de volgende stappen:
+
+1. **Definiëren van het chaos experiment**: We schrijven een YAML-bestand dat het gewenste chaos experiment beschrijft.
+2. **Appliceren van het experiment**: We sturen het YAML-bestand naar de Kubernetes API Server met `kubectl apply -f`.
+3. **Verwerking door de Chaos Controller Manager**: De Controller Manager valideert het experiment en levert het af bij de Chaos Daemon.
+4. **Uitvoering van het experiment**: De Chaos Daemon voert de foutinjectie uit op de geselecteerde pods.
+5. **Observatie en monitoring**: We monitoren het effect van het experiment via het Chaos Dashboard of andere monitoring tools.
+
+Hieronder een schematische weergave van de workflow:
+
+![ChaosMesh Workflow](plaatjes/chaos-mesh-basic-workflow.png)
 
 ### Gebruik van ChaosMesh in Kubernetes-omgevingen
 
-In een Kubernetes-omgeving integreren we ChaosMesh door de benodigde Kubernetes resources te deployen. We definiëren chaos experiments met YAML-manifesten en passen ze toe met `kubectl`. Dit stelt ons in staat om chaos engineering toe te passen binnen bestaande CI/CD-pipelines en DevOps-processen.
+In een Kubernetes-omgeving integreren we ChaosMesh door de benodigde resources te deployen. We definiëren chaos experiments met YAML-manifesten en passen ze toe met `kubectl`. Dit stelt ons in staat om chaos engineering te integreren in bestaande CI/CD-pipelines en DevOps-processen.
 
-Met ChaosMesh simuleren we scenario's zoals netwerkpartities, pod-terminaties en resource-uitputting. Dit helpt bij het identificeren van kwetsbaarheden en het verbeteren van de stabiliteit van microservices in productieomgevingen.
-
-Door de architectuur en werking van ChaosMesh te begrijpen, kunnen we effectief chaos experiments ontwerpen en uitvoeren om de betrouwbaarheid van onze systemen te verhogen.
+Met ChaosMesh simuleren we scenario's zoals netwerkpartities, pod-terminaties en resource-uitputting. Door deze experiments uit te voeren, identificeren we kwetsbaarheden en verbeteren we de stabiliteit van microservices in productieomgevingen.
 
 ## ChaosMesh binnen het bredere kader van chaos engineering
 
@@ -266,3 +278,4 @@ Deze tests benadrukken het belang van chaos engineering bij het identificeren va
 4. [LitmusChaos. (z.d.). LitmusChaos Documentation. Geraadpleegd op 7 oktober 2024, van https://litmuschaos.io/](https://litmuschaos.io/)
 5. [Casey, K. (2020). *How to explain Kubernetes in plain English*. Geraadpleegd op 7 oktober 2024, van https://enterprisersproject.com/article/2017/10/how-explain-kubernetes-plain-english](https://enterprisersproject.com/article/2017/10/how-explain-kubernetes-plain-english)
 6. [Chaos Mesh. (z.d.). *Architecture Overview*. Geraadpleegd op 7 oktober 2024, van https://chaos-mesh.org/docs](https://chaos-mesh.org/docs/#:~:text=Architecture%20overview%E2%80%8B,or%20memory%20resource.)
+7. [Chaos Mesh. (z.d.). *Implement Chaos Engineering in K8s*. Geraadpleegd op 7 oktober 2024, van https://chaos-mesh.org/blog/implement-chaos-engineering-in-k8s/](https://chaos-mesh.org/blog/implement-chaos-engineering-in-k8s/)
