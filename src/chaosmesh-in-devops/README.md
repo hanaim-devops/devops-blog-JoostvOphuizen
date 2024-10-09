@@ -5,9 +5,9 @@
 
 ## Wat is ChaosMesh
 
-<img src="plaatjes/chaos-monkeyOn-shipping-container.webp" alt="CNCF logo" width="60%" style="margin: 0px 0px 10px 5%; float: right; max-width: 500px;">
+<img src="plaatjes/chaos-monkeyOn-shipping-container.webp" alt="chatgpt generated image of a chaotic monkey on a ship, holding a container" width="60%" style="margin: 0px 0px 10px 5%; float: right; max-width: 500px;">
 
-<!-- <img src="../chaosmesh-in-devops/plaatjes/chaos-mesh-logo.png" alt="CNCF logo" width="200px" align="right" style="margin: 20px"> -->
+[<p style="text-align: center">Figuur 1: ChaosMonkey</p>](#bronnen)
 
 ChaosMesh is een open-source chaos engineering tool ontworpen voor Kubernetes clusters. Het stelt ons in staat om verschillende soorten chaos experiments uit te voeren, zoals netwerkvertragingen, pod-fouten en CPU-belasting. Met ChaosMesh testen we de veerkracht van microservices door gecontroleerd storingen te introduceren.
 
@@ -19,9 +19,10 @@ ChaosMesh is gebouwd op Kubernetes Custom Resource Definitions (CRDs). Om versch
 - **Chaos Controller Manager**: Verantwoordelijk voor het plannen en beheren van chaos experiments. Het bevat verschillende CRD Controllers, zoals de Workflow Controller en Controllers voor verschillende fouttypen.
 - **Chaos Daemon**: Voert de daadwerkelijke foutinjecties uit. De Chaos Daemon draait in DaemonSet-modus en heeft standaard de Privileged permissie. Het verstoort netwerkapparaten, bestandssystemen en kernels door te injecteren in de Namespace van de doel-Pod.
 
-Hieronder zie je de architectuur van ChaosMesh:
+Hieronder zie je de architectuur van ChaosMesh (Zie figuur 2: ChaosMesh architectuur):
 
 ![ChaosMesh Architectuur](plaatjes/chaos-mesh-architecture.png)
+[<p style="text-align: center">Figuur 2: ChaosMesh architectuur</p>](#bronnen)
 
 De architectuur is onderverdeeld in drie lagen:
 
@@ -43,9 +44,10 @@ De workflow van ChaosMesh bestaat uit de volgende stappen:
 4. **Uitvoering van het experiment**: De Chaos Daemon voert de foutinjectie uit op de geselecteerde pods.
 5. **Observatie en monitoring**: We monitoren het effect van het experiment via het Chaos Dashboard of andere monitoring tools.
 
-Hieronder een schematische weergave van de workflow:
+Hieronder een schematische weergave van de workflow (Zie figuur 3: ChaosMesh workflow):
 
 ![ChaosMesh Workflow](plaatjes/chaos-mesh-basic-workflow.png)
+[<p style="text-align: center">Figuur 3: ChaosMesh workflow</p>](#bronnen)
 
 ### Gebruik van ChaosMesh in Kubernetes-omgevingen
 
