@@ -144,6 +144,8 @@ In de workflow (zie Figuur 3) zien we ook 'admission-webhooks' en 'sidecar conta
 
 ![Figuur 3: ChaosMesh Workflow](plaatjes/chaos-mesh-basic-workflow.png)
 
+<p style="text-align: center">Figuur 3: ChaosMesh Workflow</p>
+
 <!-- TOC --><a name="gebruik-van-chaosmesh-in-kubernetes-omgevingen"></a>
 ### Gebruik van ChaosMesh in Kubernetes-omgevingen
 
@@ -217,7 +219,9 @@ In de praktijk merken organisaties dat het gebruik van ChaosMesh leidt tot beter
 
 Uit een recent rapport blijkt dat er een positieve relatie is tussen hogere beschikbaarheid en een kortere Mean Time to Resolution (MTTR) bij teams die chaos engineering experiments uitvoeren. Teams die regelmatig experiments uitvoeren, rapporteren een beschikbaarheid van meer dan 99.9%. 23% van de teams gaf aan een MTTR van minder dan één uur te hebben, en 60% had een MTTR van minder dan 12 uur. Netwerkaanvallen zijn de meest uitgevoerde experiments, en 34% van de respondenten voert chaos experiments uit in productieomgevingen.
 
-![Figuur x: Frequentie van Chaos Engineering experiments op basis van beschikbaarheid](plaatjes/frequency-of-chaos-engineering-experiments-by-availability.webp)
+![Figuur 4: Frequentie van Chaos Engineering experiments op basis van beschikbaarheid](plaatjes/frequency-of-chaos-engineering-experiments-by-availability.webp)
+
+<p style="text-align: center">Figuur 4: Frequentie van Chaos Engineering experiments op basis van beschikbaarheid</p>
 
 Het rapport stelt dat de top 20% van de respondenten diensten heeft met een beschikbaarheid van meer dan "vier negens". 23% van de teams gaf aan dat hun MTTR minder dan een uur was, terwijl 60% een MTTR van minder dan 12 uur rapporteerde. 81,4% van de respondenten meldde gemiddeld 1-10 incidenten met hoge prioriteit per maand. Deze incidenten werden voornamelijk veroorzaakt door netwerkproblemen (50%), interne afhankelijkheden (41%), slechte code-deployments (39%) en configuratiefouten (48%) ([InfoQ, 2021](#bronnen)).
 
@@ -265,11 +269,15 @@ Je voegt de officiële Chaos Mesh Helm-repository toe aan je systeem en werkt ve
 
 ![Helm repo toevoegen](plaatjes/demo/cli-helm-add-chaos-mesh-to-repo.png)
 
+<p style="text-align: center">Figuur 5: Helm-repository toevoegen</p>
+
 **Stap 4: Installeer Chaos Mesh**
 
 Om ChaosMesh in je Kubernetes-cluster te installeren, maak je eerst een aparte namespace aan genaamd `chaos-testing`. Dit zorgt voor een gescheiden omgeving waarin je ChaosMesh draait.
 
 ![Chaos Mesh installeren](plaatjes/demo/cli-helm-create-namespace-and-install-chaos-mesh.png)
+
+<p style="text-align: center">Figuur 6: Chaos Mesh installeren</p>
 
 **Stap 5: Verifieer de installatie**
 
@@ -277,11 +285,15 @@ Controleer of alle benodigde pods van ChaosMesh goed draaien. Dit zijn de versch
 
 ![Pods controleren](plaatjes/demo/cli-helm-create-namespace-and-install-chaos-mesh.png)
 
+<p style="text-align: center">Figuur 7: Pods controleren</p>
+
 **Stap 6: Open het Chaos Dashboard**
 
 ChaosMesh biedt een dashboard waarmee je gemakkelijk experiments kunt beheren en monitoren. Je kunt dit dashboard openen door het dashboard lokaal beschikbaar te maken via een port-forward, waarna je in je browser naar het lokale adres kunt gaan.
 
 ![Chaos Mesh Dashboard](plaatjes/demo/chaos-mesh-dashboard.png)
+
+<p style="text-align: center">Figuur 8: Chaos Mesh dashboard</p>
 
 <!-- TOC --><a name="uitvoeren-van-experiments-met-chaosmesh"></a>
 ### Uitvoeren van experiments met ChaosMesh
@@ -292,6 +304,8 @@ ChaosMesh biedt een dashboard waarmee je gemakkelijk experiments kunt beheren en
 In dit experiment voeren we een **Pod Kill** experiment uit. Hiermee simuleer je het uitvallen van een pod, zodat je kunt testen hoe je applicatie omgaat met onverwachte uitval.
 
 ![Pod Kill experiment](plaatjes/demo/chaos-mesh-kill-pod-overview.png)
+
+<p style="text-align: center">Figuur 9: Pod Kill experiment</p>
 
 De configuratie van het Pod Kill experiment is simpel. In de YAML-configuratie geef je aan welke pod je wilt targeten. In dit geval is het de `priemtester` pod.
 
@@ -323,6 +337,8 @@ Nadat je het Pod Kill experiment hebt uitgevoerd, zie je dat Kubernetes automati
 Het **Network Delay** experiment simuleert een vertraging in het netwerkverkeer tussen twee diensten. In dit geval voegen we een vertraging toe tussen de `priemtester` applicatie en de `postgres` database. Hiermee test je hoe je applicatie omgaat met netwerkvertragingen.
 
 ![Network Delay experiment](plaatjes/demo/chaos-mesh-network-latency-overview.png)
+
+<p style="text-align: center">Figuur 10: Network Delay experiment</p>
 
 In de YAML-configuratie geven we aan dat we 200 milliseconden vertraging willen toevoegen aan het verkeer tussen de `priemtester` en de `postgres` database.
 
@@ -356,6 +372,8 @@ spec:
 Tijdens het uitvoeren van dit experiment introduceerden we 200 milliseconden extra latentie in het verkeer tussen de `priemtester` en de `postgres` database. Dit leidde tot langere responstijden van de applicatie. In Postman zagen we dat het langer duurde voordat de verzoeken voltooid waren.
 
 ![Postman resultaat](plaatjes/demo/postman-latency-demo.png)
+
+<p style="text-align: center">Figuur 11: Postman resultaat</p>
 
 <!-- TOC --><a name="conclusie-van-de-experiments"></a>
 ### Conclusie van de experiments
