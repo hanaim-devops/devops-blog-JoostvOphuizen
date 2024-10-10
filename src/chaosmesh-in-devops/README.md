@@ -40,6 +40,11 @@
 <!-- TOC --><a name="introductie"></a>
 ## Introductie
 
+<div style="margin: 0px 0px 10px 5%; float: right; max-width: 500px;">
+  <img src="plaatjes/chaos-monkeyOn-shipping-container.webp" alt="chatgpt generated image of a chaotic monkey on a ship, holding a container" style="width: 60%;">
+  <p><a href="https://chatgpt.com/share/670798f5-54e4-8005-bfa2-ba64b82acd17">Figuur 1: ChaosMonkey</a></p>
+</div>
+
 In deze blog beschrijf ik hoe je de betrouwbaarheid van microservices kunt verbeteren met behulp van ChaosMesh en chaos engineering. Ik leg uit wat chaos engineering is en hoe ChaosMesh werkt binnen Kubernetes clusters. Eerst bespreek ik de principes van chaos engineering en waarom het belangrijk is in moderne DevOps-omgevingen. Daarna duik ik in de architectuur van ChaosMesh en hoe je het kunt implementeren in een Kubernetes-omgeving. Tot slot deel ik mijn ervaringen met het uitvoeren van experiments. Deze blog is geschreven in opdracht van de Hogeschool van Arnhem en Nijmegen tijdens de Minor DevOps.
 
 <!-- TOC --><a name="chaosmesh-binnen-het-bredere-kader-van-chaos-engineering"></a>
@@ -61,10 +66,6 @@ Door deze experiments uit te voeren, verkrijgen DevOps-teams inzicht in het gedr
 
 <!-- TOC --><a name="wat-is-chaosmesh"></a>
 ## Wat is ChaosMesh
-
-<img src="plaatjes/chaos-monkeyOn-shipping-container.webp" alt="chatgpt generated image of a chaotic monkey on a ship, holding a container" width="60%" style="margin: 0px 0px 10px 5%; float: right; max-width: 500px;">
-
-[<p style="text-align: center">Figuur 1: ChaosMonkey</p>](#bronnen)
 
 ChaosMesh is een open-source chaos engineering tool ontworpen voor Kubernetes clusters. Het stelt ons in staat om verschillende soorten chaos experiments uit te voeren, zoals netwerkvertragingen, pod-fouten en CPU-belasting. Met ChaosMesh testen we de veerkracht van microservices door gecontroleerd storingen te introduceren.
 
